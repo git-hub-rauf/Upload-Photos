@@ -29,22 +29,22 @@
       text-align: center;
     }
     .upload-box {
-      border: none;               /* removed dotted line */
+      border: none;                /* no border */
       border-radius: 12px;
       padding: 30px;
       text-align: center;
       cursor: pointer;
       transition: background .18s ease;
-      background: #fafafa;
+      background: #e8f0ff;         /* light blue background */
     }
     .upload-box:hover {
-      background: #f0f4ff;
+      background: #d4e4ff;         /* darker on hover */
     }
     .upload-box input { display:none; }
     .upload-box p {
       margin: 0;
       font-size: 15px;
-      color: #444;
+      color: #333;
     }
     .meta {
       display: flex;
@@ -178,9 +178,9 @@
       }
     });
 
-    dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.style.background="#eef6ff"; });
-    dropArea.addEventListener('dragleave', () => dropArea.style.background="#fafafa");
-    dropArea.addEventListener('drop', e => { e.preventDefault(); dropArea.style.background="#fafafa"; addFiles(e.dataTransfer.files); });
+    dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.style.background="#d4e4ff"; });
+    dropArea.addEventListener('dragleave', () => dropArea.style.background="#e8f0ff");
+    dropArea.addEventListener('drop', e => { e.preventDefault(); dropArea.style.background="#e8f0ff"; addFiles(e.dataTransfer.files); });
 
     fileInput.addEventListener('change', e => addFiles(e.target.files));
 
