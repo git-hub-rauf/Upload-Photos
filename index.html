@@ -4,77 +4,121 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Photo Upload</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: "Segoe UI", sans-serif;
-      background: #f5f7fa;
+      font-family: "Poppins", sans-serif;
+      background: #f0f2f5;
       margin: 0;
-      padding: 0;
       display: flex;
       justify-content: center;
       align-items: flex-start;
       min-height: 100vh;
+      padding: 40px 15px;
     }
 
     .container {
-      width: 95%;
-      max-width: 600px;
+      width: 100%;
+      max-width: 700px;
       background: #fff;
-      margin-top: 40px;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      border-radius: 14px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+      padding: 30px;
+      text-align: center;
     }
 
     h1 {
-      text-align: center;
+      font-weight: 600;
+      margin-bottom: 25px;
       color: #333;
-      margin-bottom: 20px;
-      font-size: 1.6rem;
     }
 
     .upload-box {
-      border: 2px dashed #bbb;
-      border-radius: 10px;
-      padding: 30px;
-      text-align: center;
+      border: 2px dashed #aaa;
+      border-radius: 12px;
+      padding: 40px;
+      transition: 0.3s;
       cursor: pointer;
-      transition: all 0.3s ease;
+      background: #fafafa;
     }
 
-    .upload-box:hover {
+    .upload-box.dragover {
       border-color: #4a90e2;
-      background: #f0f8ff;
+      background: #eef6ff;
     }
 
     .upload-box input {
       display: none;
     }
 
-    .preview {
-      margin-top: 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 12px;
+    .upload-box p {
+      margin: 0;
+      font-size: 15px;
+      color: #666;
     }
 
-    .preview img {
+    .preview {
+      margin-top: 25px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    .preview-item {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      background: #fff;
+      padding: 8px;
+    }
+
+    .preview-item img {
       width: 100%;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      height: 120px;
       object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .preview-info {
+      font-size: 13px;
+      margin-top: 6px;
+      color: #555;
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .progress-bar {
+      height: 6px;
+      width: 0;
+      background: #4a90e2;
+      border-radius: 3px;
+      margin-top: 15px;
+      transition: width 0.3s;
     }
 
     .btn {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 12px 24px;
+      margin-top: 25px;
+      padding: 12px 26px;
       font-size: 15px;
       border: none;
       border-radius: 8px;
       background: #4a90e2;
       color: white;
       cursor: pointer;
+      font-weight: 600;
       transition: 0.3s;
     }
 
@@ -85,36 +129,83 @@
 </head>
 <body>
   <div class="container">
-    <h1>Upload Your Photos</h1>
-    <label class="upload-box">
+    <h1>📸 Professional Photo Upload</h1>
+    <label class="upload-box" id="dropArea">
       <input type="file" id="fileInput" multiple accept="image/*">
-      <p>📷 Click or Drag & Drop to Upload</p>
+      <p>Click or Drag & Drop images here</p>
     </label>
     <div class="preview" id="preview"></div>
+    <div class="progress-bar" id="progressBar"></div>
     <button class="btn" onclick="uploadPhotos()">Upload</button>
   </div>
 
   <script>
-    const fileInput = document.getElementById('fileInput');
-    const preview = document.getElementById('preview');
+    const fileInput = document.getElementById("fileInput");
+    const preview = document.getElementById("preview");
+    const dropArea = document.getElementById("dropArea");
+    const progressBar = document.getElementById("progressBar");
+    let files = [];
 
-    // Preview selected images
-    fileInput.addEventListener('change', () => {
+    // File selection
+    fileInput.addEventListener("change", handleFiles);
+
+    // Drag & drop
+    dropArea.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropArea.classList.add("dragover");
+    });
+    dropArea.addEventListener("dragleave", () => {
+      dropArea.classList.remove("dragover");
+    });
+    dropArea.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropArea.classList.remove("dragover");
+      handleFiles({ target: { files: e.dataTransfer.files } });
+    });
+
+    function handleFiles(e) {
+      files = [...e.target.files];
       preview.innerHTML = "";
-      [...fileInput.files].forEach(file => {
+      files.forEach((file, index) => {
         const reader = new FileReader();
-        reader.onload = e => {
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          preview.appendChild(img);
+        reader.onload = (ev) => {
+          const div = document.createElement("div");
+          div.classList.add("preview-item");
+          div.innerHTML = `
+            <button class="remove-btn" onclick="removeFile(${index})">×</button>
+            <img src="${ev.target.result}" alt="preview">
+            <div class="preview-info">${file.name} (${(file.size/1024).toFixed(1)} KB)</div>
+          `;
+          preview.appendChild(div);
         };
         reader.readAsDataURL(file);
       });
-    });
+    }
 
-    // Placeholder function for upload
+    function removeFile(index) {
+      files.splice(index, 1);
+      fileInput.value = "";
+      handleFiles({ target: { files } });
+    }
+
     function uploadPhotos() {
-      alert("Here we would upload the photos to a server or cloud (e.g. Cloudinary/Firebase).");
+      if (files.length === 0) {
+        alert("No photos selected!");
+        return;
+      }
+      progressBar.style.width = "0%";
+
+      // Fake upload simulation
+      let progress = 0;
+      const interval = setInterval(() => {
+        if (progress >= 100) {
+          clearInterval(interval);
+          alert("✅ Upload complete! (Here you can connect to Cloudinary/Firebase)");
+        } else {
+          progress += 10;
+          progressBar.style.width = progress + "%";
+        }
+      }, 200);
     }
   </script>
 </body>
