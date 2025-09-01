@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Upload</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+    }
+    .upload-box {
+      border: 2px dashed #555;
+      padding: 30px;
+      cursor: pointer;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    button {
+      margin-top: 15px;
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h2>Upload Your Photo</h2>
+
+  <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+    <p>Click here to select a photo</p>
+    <input type="file" id="fileInput" accept="image/*">
+  </div>
+
+  <button onclick="uploadImage()">Upload</button>
+
+  <div id="result"></div>
+
+  <script>
+    async function uploadImage() {
+      const fileInput = document.getElementById('fileInput');
+      if (!fileInput.files.length) {
+        alert("Please select a file first!");
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "YOUR_UPLOAD_PRESET"); // from Cloudinary settings
+
+      const response = await fetch("https://api.cloudinary.com/v1_1/Upload Photos/image/upload", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+      document.getElementById("result").innerHTML =
+        `<p>Uploaded ✅</p><a href="${data.secure_url}" target="_blank">View Photo</a>`;
+    }
+  </script>
+</body>
+</html>
