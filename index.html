@@ -1,212 +1,221 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Photo Upload</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Professional Photo Upload — Fixed</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: "Poppins", sans-serif;
-      background: #f0f2f5;
+      background: #f3f6fb;
       margin: 0;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding: 40px 15px;
+      padding: 36px 16px;
     }
-
     .container {
       width: 100%;
-      max-width: 700px;
+      max-width: 760px;
       background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 8px 22px rgba(0,0,0,0.08);
-      padding: 30px;
-      text-align: center;
-    }
-
-    h1 {
-      font-weight: 600;
-      margin-bottom: 25px;
-      color: #333;
-    }
-
-    .upload-box {
-      border: 2px dashed #aaa;
       border-radius: 12px;
-      padding: 40px;
-      transition: 0.3s;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 26px;
+    }
+    h1 { margin: 0 0 16px 0; font-weight:600; color:#222; }
+    .upload-box {
+      border: 2px dashed #cfcfcf;
+      border-radius: 12px;
+      padding: 36px;
+      text-align: center;
       cursor: pointer;
-      background: #fafafa;
+      transition: all .18s ease;
+      background: #fafafb;
     }
-
-    .upload-box.dragover {
-      border-color: #4a90e2;
-      background: #eef6ff;
-    }
-
-    .upload-box input {
-      display: none;
-    }
-
-    .upload-box p {
-      margin: 0;
-      font-size: 15px;
-      color: #666;
-    }
-
-    .preview {
-      margin-top: 25px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 15px;
-    }
-
-    .preview-item {
-      position: relative;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-      background: #fff;
-      padding: 8px;
-    }
-
-    .preview-item img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 6px;
-    }
-
-    .preview-info {
-      font-size: 13px;
-      margin-top: 6px;
-      color: #555;
-    }
-
-    .remove-btn {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .progress-bar {
-      height: 6px;
-      width: 0;
-      background: #4a90e2;
-      border-radius: 3px;
-      margin-top: 15px;
-      transition: width 0.3s;
-    }
-
+    .upload-box.dragover { border-color:#4a90e2; background:#eef6ff; }
+    .upload-box input { display:none; }
+    .meta { display:flex; gap:12px; align-items:center; margin-top:12px; }
+    .count { color:#555; font-size:14px; }
     .btn {
-      margin-top: 25px;
-      padding: 12px 26px;
-      font-size: 15px;
-      border: none;
-      border-radius: 8px;
-      background: #4a90e2;
-      color: white;
-      cursor: pointer;
-      font-weight: 600;
-      transition: 0.3s;
+      margin-left:auto;
+      padding:10px 18px;
+      border-radius:8px;
+      border:none;
+      font-weight:600;
+      cursor:pointer;
+      background:#4a90e2; color:#fff;
     }
-
-    .btn:hover {
-      background: #357abd;
-    }
+    .preview { margin-top:18px; display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:14px; }
+    .preview-item { position:relative; border-radius:10px; overflow:hidden; background:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.06); padding:8px; }
+    .preview-item img { width:100%; height:110px; object-fit:cover; border-radius:6px; display:block; }
+    .preview-info { font-size:13px; color:#444; margin-top:8px; }
+    .remove-btn { position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.6); color:#fff; border:none; width:28px; height:28px; border-radius:50%; cursor:pointer; }
+    .progress-wrap { margin-top:14px; background:#eee; height:8px; border-radius:6px; overflow:hidden; }
+    .progress-bar { height:100%; width:0%; background:#4a90e2; transition:width .25s ease; }
+    .error { margin-top:10px; color:#b00020; font-size:13px; min-height:18px; }
+    @media (max-width:420px){ .upload-box { padding:20px } .preview-item img { height:90px } }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>📸 Professional Photo Upload</h1>
-    <label class="upload-box" id="dropArea">
-      <input type="file" id="fileInput" multiple accept="image/*">
-      <p>Click or Drag & Drop images here</p>
+    <h1>📸 Professional Photo Upload (fixed)</h1>
+
+    <label id="dropArea" class="upload-box">
+      <input id="fileInput" type="file" multiple accept="image/*">
+      <div><strong>Click or drag & drop images here</strong></div>
+      <div style="color:#666; margin-top:6px; font-size:14px;">Supports multiple files. Max size: 8 MB each.</div>
     </label>
+
+    <div class="meta">
+      <div class="count" id="fileCount">No files selected</div>
+      <button id="uploadBtn" class="btn">Upload</button>
+    </div>
+
+    <div id="errorBox" class="error" aria-live="polite"></div>
+
     <div class="preview" id="preview"></div>
-    <div class="progress-bar" id="progressBar"></div>
-    <button class="btn" onclick="uploadPhotos()">Upload</button>
+
+    <div class="progress-wrap" aria-hidden="true">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
   </div>
 
   <script>
-    const fileInput = document.getElementById("fileInput");
-    const preview = document.getElementById("preview");
-    const dropArea = document.getElementById("dropArea");
-    const progressBar = document.getElementById("progressBar");
-    let files = [];
+    // Elements
+    const fileInput = document.getElementById('fileInput');
+    const dropArea = document.getElementById('dropArea');
+    const preview = document.getElementById('preview');
+    const fileCount = document.getElementById('fileCount');
+    const errorBox = document.getElementById('errorBox');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const progressBar = document.getElementById('progressBar');
 
-    // File selection
-    fileInput.addEventListener("change", handleFiles);
+    // State
+    let files = []; // array of File objects
+    const MAX_SIZE = 8 * 1024 * 1024; // 8 MB
 
-    // Drag & drop
-    dropArea.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      dropArea.classList.add("dragover");
-    });
-    dropArea.addEventListener("dragleave", () => {
-      dropArea.classList.remove("dragover");
-    });
-    dropArea.addEventListener("drop", (e) => {
-      e.preventDefault();
-      dropArea.classList.remove("dragover");
-      handleFiles({ target: { files: e.dataTransfer.files } });
-    });
-
-    function handleFiles(e) {
-      files = [...e.target.files];
-      preview.innerHTML = "";
-      files.forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          const div = document.createElement("div");
-          div.classList.add("preview-item");
-          div.innerHTML = `
-            <button class="remove-btn" onclick="removeFile(${index})">×</button>
-            <img src="${ev.target.result}" alt="preview">
-            <div class="preview-info">${file.name} (${(file.size/1024).toFixed(1)} KB)</div>
-          `;
-          preview.appendChild(div);
-        };
-        reader.readAsDataURL(file);
-      });
+    // Helpers
+    function showError(msg) {
+      errorBox.textContent = msg || '';
+      if (msg) console.warn('Upload UI:', msg);
     }
 
-    function removeFile(index) {
-      files.splice(index, 1);
-      fileInput.value = "";
-      handleFiles({ target: { files } });
+    function updateCount() {
+      fileCount.textContent = files.length ? `${files.length} file${files.length>1?'s':''} selected` : 'No files selected';
     }
 
-    function uploadPhotos() {
-      if (files.length === 0) {
-        alert("No photos selected!");
-        return;
-      }
-      progressBar.style.width = "0%";
-
-      // Fake upload simulation
-      let progress = 0;
-      const interval = setInterval(() => {
-        if (progress >= 100) {
-          clearInterval(interval);
-          alert("✅ Upload complete! (Here you can connect to Cloudinary/Firebase)");
-        } else {
-          progress += 10;
-          progressBar.style.width = progress + "%";
+    function addFilesFromList(fileList) {
+      showError('');
+      const incoming = Array.from(fileList || []);
+      let added = 0;
+      incoming.forEach(f => {
+        if (!f.type || !f.type.startsWith('image/')) {
+          showError('Only image files are allowed.');
+          return;
         }
-      }, 200);
+        if (f.size > MAX_SIZE) {
+          showError(`"${f.name}" is larger than ${MAX_SIZE/1024/1024} MB.`);
+          return;
+        }
+        // simple duplicate check by name+size
+        if (files.some(x => x.name === f.name && x.size === f.size)) return;
+        files.push(f);
+        added++;
+      });
+      if (added) renderPreviews();
+      syncInputFiles();
     }
+
+    // render UI previews
+    function renderPreviews() {
+      // revoke previous object URLs
+      preview.querySelectorAll('img').forEach(img=>{
+        const src = img.getAttribute('data-src');
+        if (src) URL.revokeObjectURL(src);
+      });
+
+      preview.innerHTML = '';
+      files.forEach((f, idx) => {
+        const url = URL.createObjectURL(f);
+        const div = document.createElement('div');
+        div.className = 'preview-item';
+        div.innerHTML = `
+          <button class="remove-btn" data-index="${idx}" title="Remove">×</button>
+          <img src="${url}" data-src="${url}" alt="${f.name}">
+          <div class="preview-info">${f.name} · ${(f.size/1024).toFixed(1)} KB</div>
+        `;
+        preview.appendChild(div);
+      });
+      updateCount();
+    }
+
+    // Event delegation for remove
+    preview.addEventListener('click', (e) => {
+      const btn = e.target.closest('.remove-btn');
+      if (!btn) return;
+      const idx = Number(btn.dataset.index);
+      if (!Number.isFinite(idx)) return;
+      files.splice(idx, 1);
+      renderPreviews();
+      syncInputFiles();
+    });
+
+    // Keep the hidden input in sync so native uploads can use it if needed
+    function syncInputFiles() {
+      try {
+        const dt = new DataTransfer();
+        files.forEach(f => dt.items.add(f));
+        fileInput.files = dt.files;
+      } catch (err) {
+        // Some platforms may not support constructing DataTransfer or setting input.files.
+        console.warn('Could not update input.files via DataTransfer. Browser may not support it.', err);
+        // fallback: clear the input (user can re-select if necessary)
+        fileInput.value = '';
+      }
+    }
+
+    // Drag & drop handlers
+    dropArea.addEventListener('dragover', (e) => { e.preventDefault(); dropArea.classList.add('dragover'); });
+    dropArea.addEventListener('dragleave', () => dropArea.classList.remove('dragover'));
+    dropArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropArea.classList.remove('dragover');
+      addFilesFromList(e.dataTransfer.files);
+    });
+
+    // File input change
+    fileInput.addEventListener('change', (e) => addFilesFromList(e.target.files));
+
+    // Simulated upload (replace with real upload code)
+    uploadBtn.addEventListener('click', () => {
+      showError('');
+      if (!files.length) { showError('Please select one or more images first.'); return; }
+
+      // Example: simulate per-file upload progress
+      progressBar.style.width = '0%';
+      let completed = 0;
+      const total = files.length;
+      const step = 100 / (total * 6); // each file will jump progress several times
+      const timer = setInterval(() => {
+        let current = parseFloat(progressBar.style.width) || 0;
+        current = Math.min(100, current + step);
+        progressBar.style.width = current + '%';
+        if (current >= 100) {
+          clearInterval(timer);
+          alert('Upload complete (simulation). Now connect to your storage provider to make uploads real.');
+          // after real upload you might clear files:
+          // files = []; renderPreviews(); syncInputFiles(); progressBar.style.width='0%';
+        }
+      }, 120);
+    });
+
+    // initial UI
+    updateCount();
+
+    // debug: helpful console output if something goes wrong
+    window.addEventListener('error', (ev) => {
+      console.error('Global error:', ev.error || ev.message);
+    });
   </script>
 </body>
 </html>
