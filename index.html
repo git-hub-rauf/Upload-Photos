@@ -29,16 +29,18 @@
       text-align: center;
     }
     .upload-box {
-      border: none;                /* no border */
+      border: none;
       border-radius: 12px;
       padding: 30px;
       text-align: center;
       cursor: pointer;
-      transition: background .18s ease;
-      background: #e8f0ff;         /* light blue background */
+      transition: background .18s ease, box-shadow .18s ease;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
     .upload-box:hover {
-      background: #d4e4ff;         /* darker on hover */
+      background: #fafafa;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     }
     .upload-box input { display:none; }
     .upload-box p {
@@ -47,22 +49,17 @@
       color: #333;
     }
     .meta {
-      display: flex;
-      gap: 12px;
-      align-items: center;
       margin-top: 18px;
+      text-align: center;
     }
-    .count { color:#555; font-size:14px; }
-    .btn {
-      margin-left:auto;
-      padding: 10px 18px;
-      border-radius: 8px;
-      border:none;
-      font-weight:600;
-      cursor:pointer;
-      background:#4a90e2; color:#fff;
+    .status {
+      color: #555;
+      font-size: 14px;
+      min-height: 18px;
     }
-    .btn:hover { background:#357abd; }
+    .status.error {
+      color: #b00020;
+    }
     .preview {
       margin-top: 22px;
       display:grid;
@@ -91,15 +88,6 @@
       border:none; width:28px; height:28px;
       border-radius:50%; cursor:pointer;
     }
-    .progress-wrap {
-      margin-top:16px; background:#eee;
-      height:8px; border-radius:6px; overflow:hidden;
-    }
-    .progress-bar {
-      height:100%; width:0%; background:#4a90e2;
-      transition:width .25s ease;
-    }
-    .error { margin-top:10px; color:#b00020; font-size:13px; min-height:18px; }
     @media (max-width:420px){
       .upload-box { padding:20px }
       .preview-item img { height:90px }
@@ -116,40 +104,47 @@
     </label>
 
     <div class="meta">
-      <div class="count" id="fileCount">No files selected</div>
-      <button id="uploadBtn" class="btn">Upload</button>
+      <div class="status" id="statusMessage">No files selected</div>
     </div>
-
-    <div id="errorBox" class="error" aria-live="polite"></div>
 
     <div class="preview" id="preview"></div>
-
-    <div class="progress-wrap">
-      <div id="progressBar" class="progress-bar"></div>
-    </div>
   </div>
 
   <script>
     const fileInput = document.getElementById('fileInput');
     const dropArea = document.getElementById('dropArea');
     const preview = document.getElementById('preview');
-    const fileCount = document.getElementById('fileCount');
-    const errorBox = document.getElementById('errorBox');
-    const uploadBtn = document.getElementById('uploadBtn');
-    const progressBar = document.getElementById('progressBar');
+    const statusMessage = document.getElementById('statusMessage');
 
     let files = [];
     const MAX_SIZE = 8 * 1024 * 1024; // 8 MB
 
-    function showError(msg) { errorBox.textContent = msg || ''; }
-    function updateCount() { fileCount.textContent = files.length ? `${files.length} file${files.length>1?'s':''} selected` : 'No files selected'; }
+    function setStatus(msg, isError = false) {
+      statusMessage.textContent = msg;
+      statusMessage.classList.toggle('error', isError);
+    }
+
+    function updateStatus() {
+      if (files.length) {
+        setStatus(`${files.length} file${files.length > 1 ? 's' : ''} selected`);
+      } else {
+        setStatus('No files selected');
+      }
+    }
 
     function addFiles(list) {
-      showError('');
       Array.from(list).forEach(f => {
-        if (!f.type.startsWith('image/')) { showError('Only images allowed'); return; }
-        if (f.size > MAX_SIZE) { showError(`"${f.name}" is too large`); return; }
-        if (!files.find(x => x.name===f.name && x.size===f.size)) files.push(f);
+        if (!f.type.startsWith('image/')) {
+          setStatus('Only images allowed', true);
+          return;
+        }
+        if (f.size > MAX_SIZE) {
+          setStatus(`"${f.name}" is too large`, true);
+          return;
+        }
+        if (!files.find(x => x.name === f.name && x.size === f.size)) {
+          files.push(f);
+        }
       });
       renderPreviews();
     }
@@ -163,38 +158,31 @@
         div.innerHTML = `
           <button class="remove-btn" data-i="${i}">×</button>
           <img src="${url}" alt="${f.name}">
-          <div class="preview-info">${f.name} · ${(f.size/1024).toFixed(1)} KB</div>
+          <div class="preview-info">${f.name} · ${(f.size / 1024).toFixed(1)} KB</div>
         `;
         preview.appendChild(div);
       });
-      updateCount();
+      updateStatus();
     }
 
     preview.addEventListener('click', e => {
       if (e.target.classList.contains('remove-btn')) {
         const i = +e.target.dataset.i;
-        files.splice(i,1);
+        files.splice(i, 1);
         renderPreviews();
       }
     });
 
-    dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.style.background="#d4e4ff"; });
-    dropArea.addEventListener('dragleave', () => dropArea.style.background="#e8f0ff");
-    dropArea.addEventListener('drop', e => { e.preventDefault(); dropArea.style.background="#e8f0ff"; addFiles(e.dataTransfer.files); });
+    dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.style.background = "#fafafa"; });
+    dropArea.addEventListener('dragleave', () => dropArea.style.background = "#fff");
+    dropArea.addEventListener('drop', e => { e.preventDefault(); dropArea.style.background = "#fff"; addFiles(e.dataTransfer.files); });
 
-    fileInput.addEventListener('change', e => addFiles(e.target.files));
-
-    uploadBtn.addEventListener('click', () => {
-      if (!files.length) { showError('Please select some photos'); return; }
-      progressBar.style.width = '0%';
-      let p = 0;
-      const timer = setInterval(()=>{
-        p+=10; progressBar.style.width=p+'%';
-        if(p>=100){clearInterval(timer); alert('✅ Upload complete (demo)');}
-      },200);
+    fileInput.addEventListener('change', e => {
+      addFiles(e.target.files);
+      fileInput.value = null; // Reset input to allow adding the same file again
     });
 
-    updateCount();
+    updateStatus();
   </script>
 </body>
 </html>
