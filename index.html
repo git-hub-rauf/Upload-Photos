@@ -3,29 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Photo Gallery</title>
+  <title>My Work Hub</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; }
-    h1 { text-align: center; }
-    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-    .gallery img { width: 100%; border-radius: 8px; }
-    .photo-box { background: white; padding: 10px; border-radius: 8px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
-    .download { display: inline-block; margin-top: 8px; padding: 6px 12px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; }
-    .download:hover { background: #0056b3; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+    }
+    .links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+    .link-box {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .link-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+    }
+    a {
+      text-decoration: none;
+      font-weight: bold;
+      color: #007bff;
+      display: block;
+      font-size: 16px;
+    }
+    a:hover {
+      color: #0056b3;
+    }
   </style>
 </head>
 <body>
-  <h1>📸 My Photo Gallery</h1>
-  <div class="gallery">
-    <!-- Example photo -->
-    <div class="photo-box">
-      <img src="https://picsum.photos/400/300" alt="Photo 1">
-      <a href="https://picsum.photos/400/300" download class="download">Download</a>
-    </div>
-    <div class="photo-box">
-      <img src="https://picsum.photos/401/300" alt="Photo 2">
-      <a href="https://picsum.photos/401/300" download class="download">Download</a>
-    </div>
+  <h1>🚀 My Work Hub</h1>
+  <div class="links">
+    <div class="link-box"><a href="https://mail.google.com" target="_blank">📧 Gmail</a></div>
+    <div class="link-box"><a href="https://drive.google.com" target="_blank">📂 Google Drive</a></div>
+    <div class="link-box"><a href="https://zoom.us" target="_blank">📹 Zoom</a></div>
+    <div class="link-box"><a href="https://chat.openai.com" target="_blank">🤖 ChatGPT</a></div>
+    <div class="link-box"><a href="https://slack.com" target="_blank">💬 Slack</a></div>
+    <div class="link-box"><a href="https://www.notion.so" target="_blank">📝 Notion</a></div>
+    <div class="link-box"><a href="https://calendar.google.com" target="_blank">📅 Google Calendar</a></div>
+    <div class="link-box"><a href="https://trello.com" target="_blank">📌 Trello</a></div>
   </div>
 </body>
 </html>
