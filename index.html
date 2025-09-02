@@ -1,138 +1,31 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Photo Share</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Photo Gallery</title>
   <style>
-    body {
-      font-family: "Inter", sans-serif;
-      background: linear-gradient(135deg, #eef2f7, #f9fbff);
-      margin: 0;
-      padding: 40px 16px;
-      display: flex;
-      justify-content: center;
-    }
-    .container {
-      max-width: 900px;
-      width: 100%;
-      background: #fff;
-      border-radius: 18px;
-      padding: 32px;
-      box-shadow: 0 12px 35px rgba(0,0,0,0.08);
-    }
-    h1 {
-      text-align: center;
-      font-weight: 600;
-      font-size: 28px;
-      margin-bottom: 25px;
-      background: linear-gradient(135deg, #4a6cf7, #7a5cf5);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    /* Upload area */
-    .upload-box {
-      border-radius: 16px;
-      padding: 40px 20px;
-      text-align: center;
-      background: rgba(255,255,255,0.7);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-      cursor: pointer;
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-    .upload-box:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.1);
-    }
-    .upload-box input { display:none; }
-    .upload-box p { margin:0; font-size:16px; color:#333; font-weight:500; }
-
-    /* Gallery */
-    .gallery {
-      margin-top: 30px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
-      gap: 18px;
-    }
-    .photo-card {
-      background: #fff;
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-      display: flex;
-      flex-direction: column;
-    }
-    .photo-card img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-    }
-    .card-footer {
-      padding: 10px;
-      background: #fafafa;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13px;
-      border-top: 1px solid #eee;
-    }
-    .share-btn {
-      background: #4a6cf7;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 6px 12px;
-      cursor: pointer;
-      font-size: 13px;
-      transition: background .2s ease;
-    }
-    .share-btn:hover { background: #3757e5; }
+    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; }
+    h1 { text-align: center; }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+    .gallery img { width: 100%; border-radius: 8px; }
+    .photo-box { background: white; padding: 10px; border-radius: 8px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+    .download { display: inline-block; margin-top: 8px; padding: 6px 12px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; }
+    .download:hover { background: #0056b3; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Photo Share</h1>
-
-    <label class="upload-box">
-      <input id="fileInput" type="file" multiple accept="image/*">
-      <p>Click or drag & drop to upload photos</p>
-    </label>
-
-    <div class="gallery" id="gallery"></div>
+  <h1>📸 My Photo Gallery</h1>
+  <div class="gallery">
+    <!-- Example photo -->
+    <div class="photo-box">
+      <img src="https://picsum.photos/400/300" alt="Photo 1">
+      <a href="https://picsum.photos/400/300" download class="download">Download</a>
+    </div>
+    <div class="photo-box">
+      <img src="https://picsum.photos/401/300" alt="Photo 2">
+      <a href="https://picsum.photos/401/300" download class="download">Download</a>
+    </div>
   </div>
-
-  <script>
-    const fileInput = document.getElementById("fileInput");
-    const gallery = document.getElementById("gallery");
-
-    fileInput.addEventListener("change", (e) => {
-      Array.from(e.target.files).forEach(file => {
-        if (!file.type.startsWith("image/")) return;
-
-        const url = URL.createObjectURL(file);
-        const card = document.createElement("div");
-        card.className = "photo-card";
-        card.innerHTML = `
-          <img src="${url}" alt="${file.name}">
-          <div class="card-footer">
-            <span>${file.name}</span>
-            <button class="share-btn">Copy Link</button>
-          </div>
-        `;
-        gallery.appendChild(card);
-
-        const btn = card.querySelector(".share-btn");
-        btn.addEventListener("click", () => {
-          navigator.clipboard.writeText(url).then(() => {
-            btn.textContent = "Copied!";
-            setTimeout(() => btn.textContent = "Copy Link", 1500);
-          });
-        });
-      });
-    });
-  </script>
 </body>
 </html>
